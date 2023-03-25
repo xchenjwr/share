@@ -1,0 +1,114 @@
+{
+	"pages": [{
+			"path": "pages/home/index",
+			"style": {
+				"enablePullDownRefresh": true
+			}
+		}, {
+			"path": "pages/home/edit",
+			"style": {
+				"navigationBarTitleText": "编辑分享",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/home/blogDetail",
+			"style": {
+				"navigationBarTitleText": "分享详情",
+				"enablePullDownRefresh": true
+			}
+		}, {
+			"path": "pages/login/index",
+			"style": {
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/login/login",
+			"style": {
+				"enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/login/register",
+			"style": {
+				"enablePullDownRefresh": false
+			}
+
+		},
+		{
+			"path": "pages/message/index",
+			"style": {
+				"enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/profile/index",
+			"style": {
+				"enablePullDownRefresh": true
+			}
+		}, {
+			"path": "pages/profile/person_info",
+			"style": {
+				"navigationBarTitleText": "个人信息",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/profile/blog",
+			"style": {
+				"enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/profile/user_home",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}, {
+			"path": "pages/profile/user_list",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "趣分享",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8",
+		"app-plus": {
+			"background": "#efeff4"
+		}
+	},
+	"uniIdRouter": {},
+	"easycom": {
+		"autoscan": true,
+		"custom": {
+			"^c-(.*)": "@/components/c-$1.vue"
+		}
+	},
+	"tabBar": {
+		"list": [{
+				"pagePath": "pages/home/index",
+				"text": "发现",
+				"iconPath": "static/image/view.png",
+				"selectedIconPath": "static/image/view_selected.png"
+			},
+			{
+				"pagePath": "pages/message/index",
+				"text": "消息",
+				"iconPath": "static/image/message.png",
+				"selectedIconPath": "static/image/message_selected.png"
+			},
+			{
+				"pagePath": "pages/profile/index",
+				"text": "我的",
+				"iconPath": "static/image/user.png",
+				"selectedIconPath": "static/image/user_selected.png"
+			}
+		]
+	},
+	"lazyCodeLoading": "requiredComponents"
+}
