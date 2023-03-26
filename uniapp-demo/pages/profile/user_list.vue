@@ -13,8 +13,10 @@
 	import {
 		request
 	} from "@/network/request";
-	let userList = ref([]);
 	let userid = ref(0);
+
+	//获取用户列表
+	let userList = ref([]);
 	let page = ref(1);
 	let type = ref('fan');
 
@@ -29,15 +31,16 @@
 			userList.value = [...userList.value, ...res.data];
 		})
 	}
-	onReachBottom(() => {
-		console.log("上拉加载更多");
-		page.value += 1;
-		getUserList();
-	})
 
 	onLoad((option) => {
 		userid.value = option.userid;
 		type.value = option.type;
+		getUserList();
+	})
+
+	onReachBottom(() => {
+		console.log("上拉加载更多");
+		page.value += 1;
 		getUserList();
 	})
 </script>

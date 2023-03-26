@@ -12,8 +12,8 @@
 				<view class="up">
 					<uni-icons type="arrow-left" size="35" @tap="isSearching = false;">
 					</uni-icons>
-					<input type="text" v-model="searchValue" placeholder="分享或用户" confirm-type="search"
-						@confirm="searchContent" @input="searched=false">
+					<input type="text" v-model="searchValue" placeholder="分享或用户" confirm-type="search" @confirm="searchContent"
+						@input="searched=false">
 					<uni-icons type="clear" size="20" color="#d5d5d5" v-show="searchValue!=''" @tap="searchValue = '';
 				searched = false;">
 					</uni-icons>
@@ -35,6 +35,28 @@
 </template>
 
 <script setup>
+	const range = [{
+			value: "hot",
+			text: "热门"
+		},
+		{
+			value: "time",
+			text: "实时"
+		}
+	]
+	const sRange = [{
+			value: "hot",
+			text: "热门"
+		},
+		{
+			value: "time",
+			text: "实时"
+		},
+		{
+			value: "user",
+			text: "用户"
+		},
+	]
 	import {
 		onLoad,
 		onReachBottom,
@@ -47,38 +69,44 @@
 	import {
 		request
 	} from "@/network/request";
-	let bloglist = ref([]);
-	let page = ref(1);
 	let type = ref("hot");
-	let range = ref([{
-			value: "hot",
-			text: "热门"
-		},
-		{
-			value: "time",
-			text: "实时"
-		}
-	])
-	let sRange = ref([{
-			value: "hot",
-			text: "热门"
-		},
-		{
-			value: "time",
-			text: "实时"
-		},
-		{
-			value: "user",
-			text: "用户"
-		},
-	])
+	let page = ref(1);
+	let bloglist = ref([]);
+
 	let searchValue = ref("");
-	let isSearching = ref(false);
-	let searched = ref(false);
 	let sType = ref("hot");
 	let sPage = ref(1);
 	let userList = ref([]);
-	//网络函数
+
+	let isSearching = ref(false);
+	let searched = ref(false);
+
+
+	// 用户检索
+	function getBlogList() {
+		let data = {}
+		if (!isSearching.value) {
+			data.keyword = "";
+			data.type = type.value;
+			data.page = page.value;
+		} else if (isSearching.value) {
+			data.keyword = searchValue.value;
+			data.page = sPage.value;
+			if (sType.value != 'user') {
+				data.type = sType.value;
+			}
+		}
+		data.num = 10;
+		request(isSearching.value && sType.value == 'user' ? '/user/search' :
+			"/blog/search", "GET", data).then(res => {
+			if (isSearching.value && sType.value == 'user') {
+				userList.value = [...userList.value, ...res.data];
+			} else {
+				bloglist.value = [...bloglist.value, ...res.data];
+			}
+		})
+	}
+
 	function searchContent() {
 		bloglist.value = [];
 		userList.value = []
@@ -105,31 +133,7 @@
 		}
 	}
 
-	function getBlogList() {
-		let data = {}
-		if (!isSearching.value) {
-			data.keyword = "";
-			data.type = type.value;
-			data.page = page.value;
-		} else if (isSearching.value) {
-			data.keyword = searchValue.value;
-			data.page = sPage.value;
-			if (sType.value != 'user') {
-				data.type = sType.value;
-			}
-		}
-		data.num = 10;
-		request(isSearching.value && sType.value == 'user' ? '/user/search' :
-			"/blog/search", "GET", data).then(res => {
-			if (isSearching.value && sType.value == 'user') {
-				userList.value = [...userList.value, ...res.data];
-			} else {
-				bloglist.value = [...bloglist.value, ...res.data];
-			}
-		})
-	}
 
-	//功能函数
 	function edit() {
 		if (!uni.getStorageSync('token')) {
 			uni.showModal({
@@ -149,8 +153,8 @@
 			});
 		}
 	}
+
 	watch(isSearching, (newval, oldval) => {
-		console.log(newval, oldval);
 		bloglist.value = [];
 		searchValue.value = '';
 		if (oldval == true && newval == false) {
@@ -158,9 +162,11 @@
 			getBlogList();
 		}
 	})
+
 	onLoad(() => {
 		getBlogList();
 	})
+
 	onReachBottom(() => {
 		console.log("上拉加载更多");
 		if (isSearching.value) {
@@ -170,6 +176,7 @@
 		}
 		getBlogList();
 	})
+
 	onPullDownRefresh(() => {
 		uni.redirectTo({
 			url: "/pages/home/index"

@@ -33,8 +33,9 @@
 			default: "确定",
 		}
 	})
-	let showConfirm = ref(false);
 	const emit = defineEmits(['cancel', 'confirm'])
+
+	let showConfirm = ref(false);
 
 	function confirm() {
 		emit('confirm');

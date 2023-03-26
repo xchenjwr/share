@@ -10,8 +10,8 @@
 			</view>
 			<view class="right">
 				<text v-if="item.likes!=0">{{item.likes}}</text>
-				<uni-icons :type="item.islike?'hand-up-filled':'hand-up'" :color="item.islike?'#ee5738':'grey'"
-					size="25" @tap="toggleclike(item.id,index)">
+				<uni-icons :type="item.islike?'hand-up-filled':'hand-up'" :color="item.islike?'#ee5738':'grey'" size="25"
+					@tap="toggleclike(item.id,index)">
 				</uni-icons>
 			</view>
 		</view>
@@ -79,6 +79,7 @@
 			})
 		}
 	};
+
 	onLoad((option) => {
 		blogid.value = option.blogid;
 		getComment();

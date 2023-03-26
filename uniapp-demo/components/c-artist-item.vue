@@ -15,8 +15,7 @@
 				'album2': Object.keys(blog).length == 0 ? false : blog.filepath.length == 2,
 				'album3': Object.keys(blog).length == 0 ? false : blog.filepath.length > 2,
 			}" v-if="blog.filepath.length!=0">
-				<view v-for="(item,index) in blog.filepath" :key="index"
-					@click.stop="previewImage(blog.filepath,index)">
+				<view v-for="(item,index) in blog.filepath" :key="index" @click.stop="previewImage(blog.filepath,index)">
 					<image :src="item" mode="aspectFill"></image>
 				</view>
 			</view>
@@ -31,8 +30,8 @@
 					v-if="blog.comments!=0">{{blog.comments}}</text>
 			</view>
 			<view>
-				<uni-icons :type="blog.islike?'hand-up-filled':'hand-up'" :color="blog.islike?'#ee5738':'grey'"
-					size="30" @tap.stop="togglelike">
+				<uni-icons :type="blog.islike?'hand-up-filled':'hand-up'" :color="blog.islike?'#ee5738':'grey'" size="30"
+					@tap.stop="togglelike">
 				</uni-icons><text v-if="blog.likes!=0">{{blog.likes}}</text>
 			</view>
 		</view>
@@ -47,7 +46,7 @@
 		request
 	} from '@/network/request.js';
 	import {
-		onMounted,
+		onBeforeMount,
 		ref
 	} from 'vue';
 	const props = defineProps({
@@ -55,11 +54,9 @@
 			type: Number
 		},
 	});
-	let flag = ref(false);
+
+	// 获取文章
 	let blog = ref({});
-	let inputDialog = ref(false);
-	let content = ref("");
-	// 网络函数
 	async function getblogData() {
 		request("/blog/getData", "GET", {
 			blogid: Number(props.blogid)
@@ -100,7 +97,14 @@
 			})
 		}
 	}
-	// 功能函数
+	// 文章详情操作
+	function previewImage(imagePath, index) {
+		uni.previewImage({
+			urls: imagePath,
+			current: imagePath[index]
+		})
+	}
+
 	function toUserHome() {
 		let routes = getCurrentPages();
 		let curRoute = routes[routes.length - 1].route;
@@ -113,13 +117,6 @@
 		}
 	}
 
-	function previewImage(imagePath, index) {
-		uni.previewImage({
-			urls: imagePath,
-			current: imagePath[index]
-		})
-	}
-
 	function openDetail() {
 		let routes = getCurrentPages();
 		let curRoute = routes[routes.length - 1].route;
@@ -130,7 +127,10 @@
 		}
 
 	}
-
+	// 评论操作
+	let inputDialog = ref(false);
+	let content = ref("");
+	//openDialog
 	function setComment() {
 		if (!uni.getStorageSync('token')) {
 			uni.showModal({
@@ -184,6 +184,9 @@
 		})
 	}
 
+	//个人主页拥有更新删除功能
+	let flag = ref(false);
+
 	function userOpra() {
 		let itemList = ['修改', '删除']
 		uni.showActionSheet({
@@ -207,7 +210,7 @@
 		});
 	}
 
-	onMounted(async () => {
+	onBeforeMount(async () => {
 		await getblogData();
 		let routes = getCurrentPages();
 		let curRoute = routes[routes.length - 1].route;

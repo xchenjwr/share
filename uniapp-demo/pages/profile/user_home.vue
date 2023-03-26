@@ -1,8 +1,10 @@
 <template>
-	<c-user-data :userid="userid" />
-	<view class="title">全部分享</view>
-	<view v-for="item in bloglist" :key="item">
-		<c-artist-item :blogid="item" />
+	<view v-if="userid">
+		<c-user-data :userid="userid" />
+		<view class="title">全部分享</view>
+		<view v-for="item in bloglist" :key="item">
+			<c-artist-item :blogid="item" />
+		</view>
 	</view>
 </template>
 
@@ -12,12 +14,14 @@
 		onReachBottom
 	} from "@dcloudio/uni-app"
 	import {
-		ref,
+		ref
 	} from "vue"
 	import {
 		request
 	} from "@/network/request";
 	let userid = ref(0);
+
+	//获取用户列表
 	let bloglist = ref([]);
 	let page = ref(1);
 
@@ -32,15 +36,15 @@
 		})
 	}
 
+	onLoad((option) => {
+		userid.value = option.userid;
+		getBlogList();
+	})
+
 	onReachBottom(() => {
 		console.log("上拉加载更多");
 		page.value += 1;
 		getBlogList();
-	})
-
-	onLoad((option) => {
-		userid.value = option.userid;
-		getBlogList()
 	})
 </script>
 

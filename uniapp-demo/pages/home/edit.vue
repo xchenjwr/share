@@ -6,8 +6,7 @@
 		</view>
 		<textarea class="content" placeholder="请输入分享的文字内容" v-model="content" cols="30" rows="10"></textarea>
 		<view class="example-body">
-			<uni-file-picker :value="fileList" file-mediatype="image" :auto-upload="false" ref="files" limit="9"
-				mode="grid" title="最多选择9张图片">
+			<uni-file-picker file-mediatype="image" :auto-upload="false" ref="files" limit="9" mode="grid" title="最多选择9张图片">
 			</uni-file-picker>
 		</view>
 	</view>
@@ -26,12 +25,6 @@
 	let content = ref('');
 	let files = ref(null);
 	let type = ref("edit");
-	let fileList = ref([{
-		"name": "default.jpeg",
-		"extname": "jpeg",
-		"url": "http://127.0.0.1:3001/default.jpeg"
-
-	}])
 
 	function publish() {
 		let filepath = [];
@@ -73,7 +66,6 @@
 
 	onLoad((option) => {
 		type.value = option.type;
-		console.log(fileList.value);
 	})
 </script>
 

@@ -5,42 +5,14 @@
 		onHide
 	} from "@dcloudio/uni-app"
 	import {
-		request
-	} from "@/network/request.js"
-	import {
 		useUserStore
 	} from "@/store/user.js"
-	const store = useUserStore();
+	const {
+		setUserInfo,
+	} = useUserStore();
 	onLaunch(() => {
 		console.log('App Launch');
-		if (uni.getStorageSync('token')) {
-			request('', "GET").then(res => {
-				store.setUserid(res.data.id);
-			})
-		} else {
-			uni.login({
-				provider: 'weixin', //使用微信登录
-				success: function(loginRes) {
-					console.log(loginRes.code);
-					request("/login", "POST", {
-						code: loginRes.code
-					}).then(res => {
-						uni.showToast({
-							title: res.msg,
-							duration: 2000,
-							icon: 'none',
-						});
-						if (res.data) {
-							uni.setStorageSync("token", res.data);
-							request('', "GET").then(res => {
-								store.setUserid(res.data.id);
-							})
-						}
-					})
-				}
-			})
-		}
-
+		setUserInfo();
 	})
 	onShow(() => {
 		console.log('App Show')

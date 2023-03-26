@@ -6,7 +6,7 @@
 
 <script setup>
 	import {
-		ref,
+		ref
 	} from "vue"
 	import {
 		request
@@ -15,18 +15,10 @@
 		onLoad,
 		onReachBottom
 	} from "@dcloudio/uni-app"
-	let type = ref('person');
-	let bloglist = ref([]);
-	let page = ref(1);
 	let userid = ref(0);
-	onLoad((option) => {
-		userid.value = option.userid;
-		type.value = option.type;
-		uni.setNavigationBarTitle({
-			title: option.type == 'person' ? '个人主页' : '我的点赞'
-		})
-		getBlogList()
-	})
+	let type = ref('person');
+	let page = ref(1);
+	let bloglist = ref([]);
 
 	function getBlogList() {
 		let data = {
@@ -47,6 +39,15 @@
 		console.log("上拉加载更多");
 		page.value += 1;
 		getBlogList();
+	})
+
+	onLoad((option) => {
+		userid.value = option.userid;
+		type.value = option.type;
+		uni.setNavigationBarTitle({
+			title: option.type == 'person' ? '个人主页' : '我的点赞'
+		})
+		getBlogList()
 	})
 </script>
 

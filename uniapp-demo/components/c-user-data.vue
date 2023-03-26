@@ -11,7 +11,7 @@
 				</view>
 			</view>
 		</view>
-		<view class="follow" @tap="togglefollow" v-if="store.getUserid()!=0&&store.getUserid() != userInfo.id">
+		<view class="follow" @tap="togglefollow" v-if="myInfo&&myInfo.id != props.userid">
 			<uni-icons :type="isfan?'auth':'personadd'" size="25"></uni-icons>
 			<text>{{isfan?'已关注':'关注'}}</text>
 		</view>
@@ -36,7 +36,7 @@
 <script setup>
 	import {
 		ref,
-		onMounted
+		onBeforeMount
 	} from "vue";
 	import {
 		request
@@ -44,23 +44,29 @@
 	import {
 		useUserStore
 	} from "@/store/user.js"
-	const store = useUserStore();
+	import {
+		storeToRefs
+	} from 'pinia'
+	let {
+		userInfo: myInfo
+	} = storeToRefs(useUserStore());
 
 	const props = defineProps({
 		userid: {
-			type: Number
+			type: Number,
 		},
 	});
+
 	let userInfo = ref({});
 	let isfan = ref(false);
 
-	function getUserInfo() {
-		request("/user/getData", "GET", {
+	async function getUserInfo() {
+		await request("/user/getData", "GET", {
 			userid: props.userid,
 		}).then(res => {
 			userInfo.value = res.data;
 		})
-		request("/user/isfan", "GET", {
+		await request("/user/isfan", "GET", {
 			useredid: props.userid,
 		}).then(res => {
 			isfan.value = res.data;
@@ -92,9 +98,8 @@
 			isfan.value = !isfan.value;
 		})
 	}
-	onMounted(() => {
-		console.log(props.userid);
-		getUserInfo();
+	onBeforeMount(async () => {
+		await getUserInfo();
 	})
 </script>
 

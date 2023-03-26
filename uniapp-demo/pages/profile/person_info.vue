@@ -6,8 +6,7 @@
 	<view class="form">
 		<view>
 			<label for="username">用户名</label>
-			<input type="text" id="username" v-model="userInfo.username" disabled="true"
-				@click="openDialog('username')" />
+			<input type="text" id="username" v-model="userInfo.username" disabled="true" @click="openDialog('username')" />
 		</view>
 		<view>
 			<label for="sex">性别</label>
@@ -24,23 +23,32 @@
 </template>
 
 <script setup>
-	import {
-		onLoad
-	} from "@dcloudio/uni-app"
+	const msg = {
+		username: ["修改用户名", "请输入新的用户名(12字符以内)"],
+		age: ["修改年龄", "请输入数字(0-200)或者不输入"],
+	}
 	import {
 		request
 	} from "@/network/request.js"
 	import {
 		ref
 	} from "vue";
-	let userInfo = ref({});
+	import {
+		useUserStore
+	} from "@/store/user.js"
+	import {
+		storeToRefs
+	} from 'pinia'
+	const store = useUserStore();
+	const {
+		userInfo
+	} = storeToRefs(store);
+	const {
+		setUserInfo
+	} = store;
+
+	//输入框操作
 	let inputDialog = ref(false);
-	let type = ref('username');
-	let newValue = ref("");
-	const msg = ref({
-		username: ["修改用户名", "请输入新的用户名(12字符以内)"],
-		age: ["修改年龄", "请输入数字(0-200)或者不输入"],
-	})
 
 	function openDialog(dialog) {
 		switch (dialog) {
@@ -70,6 +78,15 @@
 		}
 	}
 
+	function closeDialog() {
+		inputDialog.value = false;
+		newValue.value = "";
+	}
+
+	//更新信息
+	let type = ref('username');
+	let newValue = ref("");
+
 	function changeheadimg() {
 		uni.chooseMedia({
 			count: 1,
@@ -85,11 +102,6 @@
 				updatamsg(data, res.tempFiles[0].tempFilePath);
 			}
 		})
-	}
-
-	function closeDialog() {
-		inputDialog.value = false;
-		newValue.value = "";
 	}
 
 	function changeMsg() {
@@ -109,21 +121,9 @@
 				duration: 1000,
 				icon: 'none',
 			});
-			getData();
+			setUserInfo();
 		})
 	}
-
-	function getData() {
-		request("", "GET").then(res => {
-			console.log(res.data);
-			if (res.data) {
-				userInfo.value = res.data;
-			}
-		})
-	}
-	onLoad(() => {
-		getData();
-	})
 </script>
 
 <style lang="less">

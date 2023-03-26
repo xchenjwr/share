@@ -5,7 +5,7 @@ export function request(path, method, data = null, filePath = "") {
 			header: {
 				"Authorization": "Bearer " + uni.getStorageSync("token"),
 			},
-			timeout: 30000,
+			timeout: 10000,
 			success: (res) => {
 				if (Object.prototype.toString.call(res.data) == '[object String]') {
 					res.data = JSON.parse(res.data);

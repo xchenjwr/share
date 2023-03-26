@@ -1,6 +1,6 @@
 <template>
-	<view v-if="userid!=0">
-		<c-user-data :userid="userid" />
+	<view>
+		<c-user-data :userid="userInfo.id" />
 		<view class="userFunc">
 			<view class="func-item" v-for="item in userFunc" :key="item.icon" @click="openFunc(item.icon)">
 				<view class="icon">
@@ -16,22 +16,7 @@
 </template>
 
 <script setup>
-	import {
-		onLoad,
-		onPullDownRefresh
-	} from "@dcloudio/uni-app"
-	import {
-		ref
-	} from "vue";
-	import {
-		request
-	} from "@/network/request.js"
-	import {
-		useUserStore
-	} from "@/store/user.js"
-	const store = useUserStore();
-	let userid = ref(0);
-	let userFunc = [{
+	const userFunc = [{
 			name: "个人信息",
 			icon: "person",
 		},
@@ -48,15 +33,21 @@
 			icon: "gear"
 		},
 	]
-
-	function getUserInfo() {
-		request("", "GET").then(res => {
-			if (res.data) {
-				userid.value = res.data.id;
-				console.log(userid.value);
-			}
-		})
-	}
+	import {
+		onPullDownRefresh
+	} from "@dcloudio/uni-app"
+	import {
+		ref
+	} from "vue";
+	import {
+		useUserStore
+	} from "@/store/user.js"
+	import {
+		storeToRefs
+	} from 'pinia'
+	const {
+		userInfo
+	} = storeToRefs(useUserStore());
 
 	function openFunc(func) {
 		switch (func) {
@@ -66,9 +57,8 @@
 				})
 				break;
 			case "home":
-				console.log(store.getUserid())
 				uni.navigateTo({
-					url: `/pages/profile/blog?type=person&userid=${store.getUserid()}`,
+					url: `/pages/profile/blog?type=person&userid=${userInfo.value.id}`,
 				})
 				break;
 			case "hand-up":
@@ -80,18 +70,7 @@
 				// uni.removeStorageSync('token');
 				break;
 		}
-		console.log("跳转", func);
 	}
-	onLoad(() => {
-		if (uni.getStorageSync('token')) {
-			getUserInfo();
-		}
-	})
-	onPullDownRefresh(() => {
-		uni.redirectTo({
-			url: "/pages/profile/index"
-		})
-	})
 </script>
 
 <style lang="less">
